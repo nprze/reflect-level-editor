@@ -47,6 +47,12 @@ class ObjectManager:
         if self.spawn_point is not None:
             painter.drawPoint(getPointInScale(self.spawn_point))
 
+        # spikes
+        pen = QPen(QColor("#FF0000"), 1, Qt.SolidLine)
+        painter.setPen(pen)
+        for spike in self.spikes:
+            spike.draw(painter, scale_x, scale_y)
+
     def clear(self):
         self.vines.clear()
         self.npcs.clear()
@@ -70,8 +76,9 @@ class ObjectManager:
                 f.write(f"  end: ({round(self.npcs[i].end[0] / 2, 1)}, {Components.map_size[1] - round(self.npcs[i].end[1] / 2 - 1, 1)})\n")
                 f.write(f"  interactionRadius: 3" + "\n")
                 f.write(f"  dialogueName: {self.npcs[i].dialogue_name}" + "\n")
+            f.write(f"SpikeCount: {len(self.spikes)}\n")
             for i in range(len(self.spikes)):
-                f.write(f"spikes: {i}" + "\n")
-                f.write(f"  start: ({round(self.spikes[i][0][0][0] / 2, 1)}, {Components.map_size[1] - round(self.spikes[i][0][0][1] / 2 - 1, 1)})\n")
-                f.write(f"  end: ({round(self.spikes[i][0][1][0] / 2, 1)}, {Components.map_size[1] - round(self.spikes[i][0][1][1] / 2 - 1, 1)})\n")
-                f.write(f"  direction: {self.spikes[i][1]}\n")
+                f.write(f"Spike: {i}" + "\n")
+                f.write(f"  start: ({round(self.spikes[i].start[0] / 2, 1)}, {Components.map_size[1] - round(self.spikes[i].start[1] / 2 - 1, 1)})\n")
+                f.write(f"  end: ({round(self.spikes[i].end[0] / 2, 1)}, {Components.map_size[1] - round(self.spikes[i].end[1] / 2 - 1, 1)})\n")
+                f.write(f"  dir: {self.spikes[i].direction}\n")

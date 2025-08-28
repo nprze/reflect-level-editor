@@ -24,7 +24,7 @@ class ObjectCanvas(QWidget):
         self.last_point = None
         self.current_point = None
         self.current_type = "vines"
-        self.spike_dir = "Up"
+        self.spike_dir = "up"
 
     def add_object(self, start, end):
         if self.current_type == "vines":
