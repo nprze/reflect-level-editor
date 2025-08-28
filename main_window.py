@@ -30,9 +30,9 @@ class LevelEditor(QMainWindow):
         self.resize(self.win_width, self.win_height)
         self.setWindowTitle("rfct lvl editor")
 
-        self.menu = MainMenu(win_extent)
         self.canvas = BaseBlockCanvas(canvasExtent, [proposed_width, proposed_height])
         self.object_canvas = ObjectCanvas(canvasExtent, [proposed_width, proposed_height])
+        self.menu = MainMenu(win_extent)
 
         tc = TopCanvas([proposed_width, proposed_height])
 

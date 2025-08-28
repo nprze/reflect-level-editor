@@ -4,9 +4,11 @@ import threading
 
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QColorDialog, QComboBox, QInputDialog
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QColorDialog, QComboBox, QInputDialog, \
+    QLabel
 
 from components import Components
+from objects_menu.object_menu import ObjectMenu
 
 
 class MainMenu(QWidget):
@@ -23,9 +25,9 @@ class MainMenu(QWidget):
         right_layout.addWidget(self.combo)
         self.combo.currentIndexChanged.connect(self.switch_canvas)
 
-        clear_objs_bttn = QPushButton("Clear Objects")
-        clear_objs_bttn.clicked.connect(self.clearObjects)
-        right_layout.addWidget(clear_objs_bttn)
+
+        self.objectMenu = ObjectMenu()
+        right_layout.addLayout(self.objectMenu)
 
         right_layout.addStretch()
 
@@ -45,8 +47,10 @@ class MainMenu(QWidget):
         canvas = self.combo.itemText(index)
         if canvas == "blocks":
             Components.current_canvas = Components.blocks_canvas
+            self.objectMenu.end_setting_objects()
         elif canvas == "objects":
             Components.current_canvas = Components.object_canvas
+            self.objectMenu.begin_setting_objects()
         else:
             print(canvas)
     def clearObjects(self):
