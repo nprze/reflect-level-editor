@@ -1,5 +1,6 @@
 from components import Components
-from objects_menu.game_objects import *
+from objects_menu.line_gane_objects import *
+from objects_menu.point_game_objects import *
 
 
 '''

@@ -30,20 +30,17 @@ class ObjectCanvas(QWidget):
             current_point.setX(int(event.pos().x() / self.scale_x))
             current_point.setY(int(event.pos().y() / self.scale_y))
             current_object_class = obj_manager.objects[self.current_type]["class"]
-            print(f"object type: {self.current_type}")
             current_point = (current_point.x(), current_point.y())
             if (issubclass(current_object_class, PointGameObject)):
-                print(f"point object! should add with {current_point}")
                 obj_manager.add_object(self.current_type, current_point)
             elif (issubclass(current_object_class, LineGameObject)):
                 if (self.last_point != None):
-                    print(f"line object! should add with {current_point}, {self.last_point}")
                     obj_manager.add_object(self.current_type, current_point, self.last_point)
                     self.last_point = None
                 else:
                     self.last_point = current_point
             else:
-                print("unknown type!")
+                print(f"unknown type: {self.current_type}!")
             self.update()
 
     def clear(self):
