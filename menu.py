@@ -26,6 +26,11 @@ class MainMenu(QWidget):
         self.combo.currentIndexChanged.connect(self.switch_canvas)
 
 
+        self.clear_blocks_bttn = QPushButton("Clear Blocks")
+        self.clear_blocks_bttn.clicked.connect(Components.blocks_canvas.clear)
+        right_layout.addWidget(self.clear_blocks_bttn)
+
+
         self.objectMenu = ObjectMenu()
         right_layout.addLayout(self.objectMenu)
 

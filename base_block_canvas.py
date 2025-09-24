@@ -50,6 +50,12 @@ class BaseBlockCanvas(QWidget):
 
         self.scale_x = windowExtent[0] / self.logical_extent[0]
         self.scale_y = windowExtent[1] / self.logical_extent[1]
+    def clear(self):
+        self.objects = []
+        self.lines = []
+        self.points = []
+        self.drawing = False
+        self.update()
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:

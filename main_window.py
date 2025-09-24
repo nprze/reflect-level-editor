@@ -32,6 +32,8 @@ class LevelEditor(QMainWindow):
 
         self.canvas = BaseBlockCanvas(canvasExtent, [proposed_width, proposed_height])
         self.object_canvas = ObjectCanvas(canvasExtent, [proposed_width, proposed_height])
+        Components.object_canvas = self.object_canvas
+        Components.set_canvas(self.canvas)
         self.menu = MainMenu(win_extent)
 
         tc = TopCanvas([proposed_width, proposed_height])
@@ -60,8 +62,6 @@ class LevelEditor(QMainWindow):
         # Components singleton setup
         Components.set_window(self)
         Components.set_menu(self.menu)
-        Components.set_canvas(self.canvas)
-        Components.object_canvas = self.object_canvas
         Components.current_canvas = self.canvas
 
         Components.map_size = canvasExtent

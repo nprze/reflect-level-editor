@@ -1,40 +1,90 @@
 from PyQt5.QtCore import QPoint
+from PyQt5.QtWidgets import QInputDialog
 
-class GameObject:
+
+class LineGameObject:
     def __init__(self, start, end):
         self.start = start
         self.end = end
 
-    def draw(self, painter, scale_x, scale_y):
-        raise NotImplementedError("draw method must be implemented by subclasses")
-
-    def _scale_point(self, point, scale_x, scale_y):
-        return QPoint(int(point[0] * scale_x), int(point[1] * scale_y))
-
-
-class Vine(GameObject):
-    def __init__(self, start, end, parts):
-        super().__init__(start, end)
-        self.parts = parts
+    @staticmethod
+    def class_specific_stuff(file):
+        pass
 
     def draw(self, painter, scale_x, scale_y):
         painter.drawLine(self._scale_point(self.start, scale_x, scale_y),
                          self._scale_point(self.end, scale_x, scale_y))
 
+    def save_to_file(self, file, y_minus):
+        file.write(f"  start: ({round(self.start[0] / 2, 1)}, {y_minus - round(self.start[1] / 2 - 1, 1)})\n")
+        file.write(f"  end: ({round(self.end[0] / 2, 1)}, {y_minus - round(self.end[1] / 2 - 1, 1)})\n")
 
-class TalkableNPC(GameObject):
-    def __init__(self, start, end, dialogue_name):
+    @staticmethod
+    def _scale_point(point, scale_x, scale_y):
+        return QPoint(int(point[0] * scale_x), int(point[1] * scale_y))
+
+class PointGameObject:
+    def __init__(self, position):
+        self.position = position
+
+    @staticmethod
+    def class_specific_stuff(file):
+        pass
+
+    def draw(self, painter, scale_x, scale_y):
+        painter.drawPoint(self._scale_point(self.position, scale_x, scale_y))
+
+    @staticmethod
+    def _scale_point(point, scale_x, scale_y):
+        return QPoint(int(point[0] * scale_x), int(point[1] * scale_y))
+    def save_to_file(self, file, y_minus):
+        file.write(f"  position: ({round(self.position[0] / 2, 1)}, {y_minus - round(self.position[1] / 2 - 1, 1) - 0.5})\n")
+
+    
+
+class SpawnPoint(PointGameObject):
+    def __init__(self, position):
+        super().__init__(position)
+    def draw(self, painter, scale_x, scale_y):
+        super().draw(painter, scale_x, scale_y)
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+
+
+class Vine(LineGameObject):
+    def __init__(self, start, end):
         super().__init__(start, end)
-        self.dialogue_name = dialogue_name
+        value, ok = QInputDialog.getInt(QInputDialog(), "vines", "input number of vines parts:", 14, 1, 100, 1)
+        self.parts = 0
+        if ok:
+            self.parts = value
+
+    def draw(self, painter, scale_x, scale_y):
+        painter.drawLine(self._scale_point(self.start, scale_x, scale_y),
+                         self._scale_point(self.end, scale_x, scale_y))
+
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+        file.write(f"  edges: {self.parts}" + "\n")
+
+class TalkableNPC(LineGameObject):
+    def __init__(self, start, end):
+        super().__init__(start, end)
+        value, ok = QInputDialog.getText(QInputDialog(), "dialogue", "dialogue name")
+        self.dialogue_name = ""
+        if ok:
+            self.dialogue_name = value
         self.interaction_radius = 3
 
     def draw(self, painter, scale_x, scale_y):
-        painter.drawLine(self._scale_point(self.start, scale_x, scale_y),
-                         self._scale_point(self.end, scale_x, scale_y))
+        super().draw(painter, scale_x, scale_y)
 
-
-class Spike(GameObject):
-    def __init__(self, start, end, direction):
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+        file.write(f"  interactionRadius: 3" + "\n")
+        file.write(f"  dialogueName: {self.dialogue_name}" + "\n")
+class Spike(LineGameObject):
+    def __init__(self, start, end):
         # only horizontal / vertical lines
         dx = abs(end[0] - start[0])
         dy = abs(end[1] - start[1])
@@ -45,15 +95,77 @@ class Spike(GameObject):
             end = (start[0], end[1])
 
         super().__init__(start, end)
-        self.direction = direction
+        self.direction = "up"
     def draw_spike(self, painter, scale_x, scale_y, point):
         painter.drawLine(self._scale_point((point.x() - 0.25, point.y()), scale_x, scale_y),
                          self._scale_point((point.x() + 0.25, point.y()), scale_x, scale_y))
         painter.drawLine(self._scale_point((point.x(), point.y()), scale_x, scale_y),
                          self._scale_point((point.x(), point.y() - 1), scale_x, scale_y))
     def draw(self, painter, scale_x, scale_y):
+        super().draw(painter, scale_x, scale_y)
         for i in range(self.end[0] - self.start[0]):
             pt=  QPoint()
             pt.setX(self.start[0] + i)
             pt.setY(self.start[1])
             self.draw_spike(painter, scale_x, scale_y, pt)
+
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+        file.write(f"  dir: {self.direction}\n")
+
+class BasicEnemy(PointGameObject):
+    def __init__(self, position):
+        super().__init__(position)
+        self.min = (-0.5, -0.5)
+        self.max = (0.5, 0.5)
+        self.animation_name = "anim"
+    def draw(self, painter, scale_x, scale_y):
+        top_left = self._scale_point((self.position[0] + self.min[0], self.position[1] + self.min[1]), scale_x, scale_y)
+        top_right = self._scale_point((self.position[0] + self.max[0], self.position[1] + self.min[1]), scale_x,scale_y)
+        bottom_right = self._scale_point((self.position[0] + self.max[0], self.position[1] + self.max[1]), scale_x,scale_y)
+        bottom_left = self._scale_point((self.position[0] + self.min[0], self.position[1] + self.max[1]), scale_x,scale_y)
+        painter.drawLine(top_left, top_right)
+        painter.drawLine(top_right, bottom_right)
+        painter.drawLine(bottom_right, bottom_left)
+        painter.drawLine(bottom_left, top_left)
+
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+        file.write(f"  min: ({round(self.min[0] / 2, 1)}, {round(self.min[1] / 2, 1)})\n")
+        file.write(f"  max: ({round(self.max[0] / 2, 1)}, {round(self.max[1] / 2, 1)})\n")
+        file.write(f"  animName: {self.animation_name}\n")
+class JumpBooster(PointGameObject):
+    def __init__(self, position):
+        super().__init__(position)
+        self.min = (-0.5, -0.5)
+        self.max = (0.5, 0.5)
+
+    @staticmethod
+    def class_specific_stuff(file):
+        file.write("JumpBoosterFile: anim/jump_boost/basic-enemy-walk.txt\n")
+        file.write("JumpBoosterAnim: anim/jump_boost/basic-enemy-turn.txt\n")
+
+    def draw(self, painter, scale_x, scale_y):
+        top_left = self._scale_point((self.position[0] + self.min[0], self.position[1] + self.min[1]), scale_x, scale_y)
+        top_right = self._scale_point((self.position[0] + self.max[0], self.position[1] + self.min[1]), scale_x,scale_y)
+        bottom_right = self._scale_point((self.position[0] + self.max[0], self.position[1] + self.max[1]), scale_x,scale_y)
+        bottom_left = self._scale_point((self.position[0] + self.min[0], self.position[1] + self.max[1]), scale_x,scale_y)
+        painter.drawLine(top_left, top_right)
+        painter.drawLine(top_right, bottom_right)
+        painter.drawLine(bottom_right, bottom_left)
+        painter.drawLine(bottom_left, top_left)
+
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
+        file.write(f"  min: ({round(self.min[0] / 2, 1)}, {round(self.min[1] / 2, 1)})\n")
+        file.write(f"  max: ({round(self.max[0] / 2, 1)}, {round(self.max[1] / 2, 1)})\n")
+
+
+class DashRecharge(PointGameObject):
+    def __init__(self, position):
+        super().__init__(position)
+    def draw(self, painter, scale_x, scale_y):
+        super().draw(painter, scale_x, scale_y)
+
+    def save_to_file(self, file, y_minus):
+        super().save_to_file(file, y_minus)
