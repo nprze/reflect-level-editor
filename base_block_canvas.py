@@ -38,7 +38,6 @@ class BaseBlockCanvas(QWidget):
     def __init__(self, extent, windowExtent):
         super().__init__()
 
-
         self.logical_extent = extent
         self.objects = []
         self.lines = []
@@ -92,7 +91,6 @@ class BaseBlockCanvas(QWidget):
         painter = QPainter(self)
         painter.fillRect(self.rect(), QColor("#000000"))
 
-        # draw helper lines
         pen = QPen(QColor("#0F0F0F"), 1, Qt.SolidLine)
         painter.setPen(pen)
         for i in range(self.logical_extent[0]-1):

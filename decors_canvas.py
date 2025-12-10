@@ -6,7 +6,7 @@ from game_objects import LineGameObject, PointGameObject
 from decorations.decor_manager import decor_manager
 
 
-class ObjectCanvas(QWidget):
+class DecorCanvas(QWidget):
     def __init__(self, extent, window_extent):
         super().__init__()
         self.setFixedSize(*window_extent)
@@ -14,7 +14,7 @@ class ObjectCanvas(QWidget):
         self.scale_y = window_extent[1] / extent[1] * 0.5
         self.last_point = None
         self.current_point = None
-        self.current_type = list(decor_manager.get_decor_types())[0]
+        self.current_type = list(decor_manager.get_object_types())[0]
 
     def mouseMoveEvent(self, event):
         if (self.last_point != None):
@@ -67,4 +67,4 @@ class ObjectCanvas(QWidget):
         if type in decor_manager.get_object_types():
             self.current_type = type
         else:
-            print(f"unknown decpr type \"{type}\"")
+            print(f"unknown object type \"{type}\"")

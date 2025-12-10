@@ -1,12 +1,15 @@
 from PyQt5.QtCore import QPoint
-from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QInputDialog, QDialog, QHBoxLayout, QPushButton
 
-from objects_menu.game_objects import LineGameObject
+from game_objects import LineGameObject
 
 
 class Vine(LineGameObject):
     def __init__(self, start, end):
         super().__init__(start, end)
+        if (start[1]>end[1]):
+            self.start = end
+            self.end = start
         value, ok = QInputDialog.getInt(QInputDialog(), "vines", "input number of vines parts:", 14, 1, 100, 1)
         self.parts = 0
         if ok:
@@ -41,6 +44,36 @@ class TalkableNPC(LineGameObject):
 
 
 class Spike(LineGameObject):
+    def orientation_dialogue(self, horizontal):
+        dialog = QDialog()
+        dialog.setWindowTitle("Two Buttons Dialog")
+
+        clicked = {"value": None}
+
+        def choose(value):
+            clicked["value"] = value
+            dialog.accept()
+
+        layout = QHBoxLayout(dialog)
+
+        right_text = "up"
+        left_text = "down"
+        if horizontal:
+            right_text = "right"
+            left_text = "left"
+        left_btn = QPushButton(left_text)
+        right_btn = QPushButton(right_text)
+
+        left_btn.clicked.connect(lambda: choose(left_text))
+        right_btn.clicked.connect(lambda: choose(right_text))
+
+        layout.addWidget(left_btn)
+        layout.addWidget(right_btn)
+
+        dialog.exec_()
+        return clicked["value"]
+
+
     def __init__(self, start, end):
         # only horizontal / vertical lines
         dx = abs(end[0] - start[0])
@@ -48,11 +81,20 @@ class Spike(LineGameObject):
 
         if dx > dy:
             end = (end[0], start[1])
+            if (start[0]>end[0]):
+                helper = start
+                start = end
+                end = helper
+            self.direction = self.orientation_dialogue(False)
         else:
             end = (start[0], end[1])
+            if (start[1]<end[1]):
+                helper = start
+                start = end
+                end = helper
+            self.direction = self.orientation_dialogue(True)
 
         super().__init__(start, end)
-        self.direction = "up"
     def draw_spike(self, painter, scale_x, scale_y, point):
         painter.drawLine(self._scale_point((point.x() - 0.25, point.y()), scale_x, scale_y),
                          self._scale_point((point.x() + 0.25, point.y()), scale_x, scale_y))

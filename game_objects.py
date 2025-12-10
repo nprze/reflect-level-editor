@@ -4,8 +4,12 @@ from PyQt5.QtWidgets import QInputDialog
 
 class LineGameObject:
     def __init__(self, start, end):
-        self.start = start
-        self.end = end
+        if (start[0]>end[0] and start[1]>end[1]):
+            self.start = end
+            self.end = start
+        else:
+            self.start = start
+            self.end = end
 
     @staticmethod
     def class_specific_stuff(file):
@@ -23,9 +27,6 @@ class LineGameObject:
     def _scale_point(point, scale_x, scale_y):
         return QPoint(int(point[0] * scale_x), int(point[1] * scale_y))
 
-
-
-
 class PointGameObject:
     def __init__(self, position):
         self.position = position
@@ -40,5 +41,6 @@ class PointGameObject:
     @staticmethod
     def _scale_point(point, scale_x, scale_y):
         return QPoint(int(point[0] * scale_x), int(point[1] * scale_y))
+
     def save_to_file(self, file, y_minus):
         file.write(f"  position: ({round(self.position[0] / 2, 1)}, {y_minus - round(self.position[1] / 2 - 1, 1) - 0.5})\n")

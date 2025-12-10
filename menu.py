@@ -4,8 +4,7 @@ import threading
 
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QMessageBox, QColorDialog, QComboBox, QInputDialog, \
-    QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog
 
 from components import Components
 from objects_menu.object_menu import ObjectMenu
@@ -21,15 +20,13 @@ class MainMenu(QWidget):
         right_layout.addWidget(save_bttn)
 
         self.combo = QComboBox()
-        self.combo.addItems(["blocks", "objects"])
+        self.combo.addItems(["blocks", "objects", "decorations"])
         right_layout.addWidget(self.combo)
         self.combo.currentIndexChanged.connect(self.switch_canvas)
-
 
         self.clear_blocks_bttn = QPushButton("Clear Blocks")
         self.clear_blocks_bttn.clicked.connect(Components.blocks_canvas.clear)
         right_layout.addWidget(self.clear_blocks_bttn)
-
 
         self.objectMenu = ObjectMenu()
         right_layout.addLayout(self.objectMenu)
@@ -45,9 +42,9 @@ class MainMenu(QWidget):
         self.setLayout(right_layout)
         Components.brush_color = Qt.white
 
-
     def color_changed(self, color):
         Components.brush_color = color
+
     def switch_canvas(self, index):
         canvas = self.combo.itemText(index)
         if canvas == "blocks":
@@ -58,8 +55,10 @@ class MainMenu(QWidget):
             self.objectMenu.begin_setting_objects()
         else:
             print(canvas)
+
     def clearObjects(self):
         Components.object_canvas.clear()
+
     def save(self):
         pixmap = QPixmap(Components.get_canvas().size())
 
@@ -75,6 +74,7 @@ class MainMenu(QWidget):
 
         def task(value):
             Components.object_canvas.saveObjectsToFile("file.txt")
+            Components.
             subprocess.run(["python", "level_saver/png_to_scene.py", "canvas_output", "file", value])
             os.remove('canvas_output.png')
             os.remove('file.txt')

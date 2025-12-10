@@ -11,7 +11,6 @@ import cv2
 import os
 import re
 
-
 def plot_point_list(point_list, lines=True):
     x_coords, y_coords = zip(*point_list)
     if lines:
@@ -293,7 +292,6 @@ def combine_triangles_to_quadrangles(x, triangles):
             remaining_triangles.append(tri1)
 
     return quadrangles, remaining_triangles
-
 
 def scale_shapes(triangles, quadrangles, x):
     def centroid(points):
@@ -625,8 +623,6 @@ def get_color(width, height, centroid, color_fluc):
     val = (1 - (x / 35) * 0.75)+fluct
     return max((min(val, 1.)), 0.3)
 
-
-
 def create_txt(polygon, quads, tris, image, output_path, output_folder, width, height, color_in = (100,200,50), color_fluctuate = 30):
     if (output_path == ""):
         output_path = str(width) + "x" + str(height) +".txt"
@@ -692,7 +688,6 @@ def create_txt(polygon, quads, tris, image, output_path, output_folder, width, h
                 coords2 = getNicelyFormatted(tris[1])
                 f.write(f"{coords}{coords2}{color_with_fluctuate} \n")
 
-
 def filter_triangles(triangles, width, height):
 
     def is_inside(vertex):
@@ -725,7 +720,6 @@ def scale_shape(shapes, scale):
     ]
     return scaled_triangles
 
-
 def filter_shapes_outside_bbox(shapes, min_coord, max_coord):
     x_min, y_min = min_coord
     x_max, y_max = max_coord
@@ -735,7 +729,6 @@ def filter_shapes_outside_bbox(shapes, min_coord, max_coord):
 
     # Keep only the shapes that are NOT fully inside the bounding box
     return [shape for shape in shapes if not is_fully_inside(shape)]
-
 
 def low_poly_vectorize(input_path, distance_between_points_arg, points_min_distance, output_path, generate_corner):
     """Main function to vectorize the object in the PNG image."""
@@ -753,7 +746,6 @@ def low_poly_vectorize(input_path, distance_between_points_arg, points_min_dista
     tris, quads  = separate_shapes(quad, tri, 0.5)
     plot_triangles_and_quadrangles(tris, quads)
     #create_svg(polygon, quads, tris, image_array, output_path)
-
 
 def low_poly_vectorize_to_txt(input_path, distance_between_points_arg, points_min_distance, output_path_svg, ouput_path_txt, output_folder, generate_corner, width, height, color):
     """Main function to vectorize the object in the PNG image."""
@@ -800,6 +792,7 @@ def low_poly_vectorize_to_txt(input_path, distance_between_points_arg, points_mi
         plot_triangles_and_quadrangles(tris, quads)
         #create_svg(polygon, quads, tris, image_array, output_path_svg)
         create_txt(polygon, quads, tris, image_array, ouput_path_txt, output_folder, width, height)
+
 def wektoruj(width, height, color, reflect_dir):
     folder = reflect_dir+'building_blocks/'#{:02x}{:02x}{:02x}'.format(*color)
     def get_next_filename(folder_path, base_name):
@@ -821,4 +814,3 @@ def wektoruj(width, height, color, reflect_dir):
     low_poly_vectorize_to_txt("", 20, 20,
                               "", #str(width)+"x"+str(height)+".svg",
                               filename, folder, True, width, height, color)
-
