@@ -57,15 +57,13 @@ class ObjectManager:
     def save_object_to_file(self, filename):
         with open(filename, "w") as f:
             for obj_type, entry in self.objects.items():
-                f.write(f"{obj_type[0].upper() + obj_type[1:]}Count: {len(entry["list"])}" + "\n")
                 if (len(entry["list"]) != 0):
+                    f.write(f"{obj_type[0].upper() + obj_type[1:]}Count: {len(entry["list"])}" + "\n")
                     entry["class"].class_specific_stuff(f)
                 i = 0
                 for obj in entry["list"]:
                     f.write(f"{obj_type[0].upper() + obj_type[1:]}: {i}" + "\n")
                     obj.save_to_file(f, Components.map_size[1])
                     i+=1
-
-
 
 obj_manager = ObjectManager()

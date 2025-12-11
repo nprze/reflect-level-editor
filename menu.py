@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog
 
 from components import Components
+from decorations.decor_menu import DecorMenu
 from objects_menu.object_menu import ObjectMenu
 
 
@@ -31,6 +32,9 @@ class MainMenu(QWidget):
         self.objectMenu = ObjectMenu()
         right_layout.addLayout(self.objectMenu)
 
+        self.decorMenu = DecorMenu()
+        right_layout.addLayout(self.decorMenu)
+
         right_layout.addStretch()
 
         self.color_picker = QColorDialog()
@@ -50,9 +54,15 @@ class MainMenu(QWidget):
         if canvas == "blocks":
             Components.current_canvas = Components.blocks_canvas
             self.objectMenu.end_setting_objects()
+            self.decorMenu.end_setting_decors()
+        elif canvas == "decorations":
+            Components.current_canvas = Components.decor_canvas
+            self.objectMenu.end_setting_objects()
+            self.decorMenu.begin_setting_decors()
         elif canvas == "objects":
             Components.current_canvas = Components.object_canvas
             self.objectMenu.begin_setting_objects()
+            self.decorMenu.end_setting_decors()
         else:
             print(canvas)
 
@@ -74,7 +84,7 @@ class MainMenu(QWidget):
 
         def task(value):
             Components.object_canvas.saveObjectsToFile("file.txt")
-            Components.
+            Components.decor_canvas.savedecorsToFile("file.txt")
             subprocess.run(["python", "level_saver/png_to_scene.py", "canvas_output", "file", value])
             os.remove('canvas_output.png')
             os.remove('file.txt')

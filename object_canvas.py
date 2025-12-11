@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtWidgets import QWidget
 
 from game_objects import LineGameObject, PointGameObject
-from decorations.decor_manager import decor_manager
+from objects_menu.object_manager import obj_manager
 
 
 class ObjectCanvas(QWidget):
@@ -14,7 +14,7 @@ class ObjectCanvas(QWidget):
         self.scale_y = window_extent[1] / extent[1] * 0.5
         self.last_point = None
         self.current_point = None
-        self.current_type = list(decor_manager.get_decor_types())[0]
+        self.current_type = list(obj_manager.get_object_types())[0]
 
     def mouseMoveEvent(self, event):
         if (self.last_point != None):
@@ -29,13 +29,13 @@ class ObjectCanvas(QWidget):
             current_point = QPoint()
             current_point.setX(int(event.pos().x() / self.scale_x))
             current_point.setY(int(event.pos().y() / self.scale_y))
-            current_object_class = decor_manager.objects[self.current_type]["class"]
+            current_object_class = obj_manager.objects[self.current_type]["class"]
             current_point = (current_point.x(), current_point.y())
             if (issubclass(current_object_class, PointGameObject)):
-                decor_manager.add_object(self.current_type, current_point)
+                obj_manager.add_object(self.current_type, current_point)
             elif (issubclass(current_object_class, LineGameObject)):
                 if (self.last_point != None):
-                    decor_manager.add_object(self.current_type, current_point, self.last_point)
+                    obj_manager.add_object(self.current_type, current_point, self.last_point)
                     self.last_point = None
                 else:
                     self.last_point = current_point
@@ -44,7 +44,7 @@ class ObjectCanvas(QWidget):
             self.update()
 
     def clear(self):
-        decor_manager.clear()
+        obj_manager.clear()
         self.update()
     def paintEvent(self, event):
         def getPointInScale(point):
@@ -53,7 +53,7 @@ class ObjectCanvas(QWidget):
             current_point.setY(int(point[1] * self.scale_y))
             return current_point
         painter = QPainter(self)
-        decor_manager.draw_all_objects(painter, self.scale_x, self.scale_y)
+        obj_manager.draw_all_objects(painter, self.scale_x, self.scale_y)
         pen = QPen(QColor("#FFFFFF"), 1, Qt.SolidLine)
         painter.setPen(pen)
         if self.current_point is not None and self.last_point is not None:
@@ -62,9 +62,9 @@ class ObjectCanvas(QWidget):
 
     # just write to file
     def saveObjectsToFile(self, filename):
-        decor_manager.save_object_to_file(filename)
+        obj_manager.save_object_to_file(filename)
     def change_object_type(self, type):
-        if type in decor_manager.get_object_types():
+        if type in obj_manager.get_object_types():
             self.current_type = type
         else:
             print(f"unknown decpr type \"{type}\"")

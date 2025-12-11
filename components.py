@@ -2,7 +2,7 @@ class Components:
     main_window = None
     blocks_canvas = None
     object_canvas = None
-    decors_canvas = None
+    decor_canvas = None
     menu = None
 
     current_canvas = None

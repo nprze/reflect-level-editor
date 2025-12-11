@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QHBoxLayout
 from base_block_canvas import BaseBlockCanvas
 from components import Components
+from decorations.decor_canvas import DecorCanvas
 from menu import MainMenu
 import components
 
@@ -32,8 +33,10 @@ class LevelEditor(QMainWindow):
 
         self.canvas = BaseBlockCanvas(canvasExtent, [proposed_width, proposed_height])
         self.object_canvas = ObjectCanvas(canvasExtent, [proposed_width, proposed_height])
+        self.decor_canvas = DecorCanvas(canvasExtent, [proposed_width, proposed_height])
         Components.object_canvas = self.object_canvas
         Components.set_canvas(self.canvas)
+        Components.decor_canvas = self.decor_canvas
         self.menu = MainMenu(win_extent)
 
         tc = TopCanvas([proposed_width, proposed_height])
@@ -43,10 +46,12 @@ class LevelEditor(QMainWindow):
 
         self.canvas.setParent(canvas_container)
         self.object_canvas.setParent(canvas_container)
+        self.decor_canvas.setParent(canvas_container)
         tc.setParent(canvas_container)
 
         self.canvas.move(0, 0)
         self.object_canvas.move(0, 0)
+        self.decor_canvas.move(0, 0)
         tc.move(0, 0)
 
         main_layout = QHBoxLayout()
