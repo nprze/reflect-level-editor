@@ -1,6 +1,6 @@
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtGui import QPainter, QColor, QPen
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtGui import QPainter, QColor, QPen
+from PyQt6.QtWidgets import QWidget
 
 from game_objects import LineGameObject, PointGameObject
 from objects_menu.object_manager import obj_manager
@@ -25,7 +25,7 @@ class ObjectCanvas(QWidget):
             self.update()
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             current_point = QPoint()
             current_point.setX(int(event.pos().x() / self.scale_x))
             current_point.setY(int(event.pos().y() / self.scale_y))
@@ -54,7 +54,7 @@ class ObjectCanvas(QWidget):
             return current_point
         painter = QPainter(self)
         obj_manager.draw_all_objects(painter, self.scale_x, self.scale_y)
-        pen = QPen(QColor("#FFFFFF"), 1, Qt.SolidLine)
+        pen = QPen(QColor("#FFFFFF"), 1, Qt.PenStyle.SolidLine)
         painter.setPen(pen)
         if self.current_point is not None and self.last_point is not None:
             painter.drawLine(getPointInScale(self.last_point), getPointInScale((self.current_point.x(), self.current_point.y())))

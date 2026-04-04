@@ -2,9 +2,9 @@ import os
 import subprocess
 import threading
 
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog
 
 from components import Components
 from decorations.decor_menu import DecorMenu
@@ -38,13 +38,13 @@ class MainMenu(QWidget):
         right_layout.addStretch()
 
         self.color_picker = QColorDialog()
-        self.color_picker.setOptions(QColorDialog.NoButtons)  # Hide OK/Cancel
+        self.color_picker.setOptions(QColorDialog.ColorDialogOption.NoButtons)  # Hide OK/Cancel
         self.color_picker.currentColorChanged.connect(self.color_changed)
         right_layout.addWidget(self.color_picker)
 
         self.setFixedSize(winExtent[0] // 5, winExtent[1])
         self.setLayout(right_layout)
-        Components.brush_color = Qt.white
+        Components.brush_color = Qt.GlobalColor.white
 
     def color_changed(self, color):
         Components.brush_color = color
@@ -76,8 +76,8 @@ class MainMenu(QWidget):
 
         scaled_pixmap = pixmap.scaled(
             QSize(Components.map_size[0], Components.map_size[1]),
-            Qt.KeepAspectRatio,
-            Qt.FastTransformation
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.FastTransformation
         )
         value, ok = QInputDialog.getText(self, "save scene", "scene name:")
         scaled_pixmap.save('canvas_output.png')

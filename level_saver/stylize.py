@@ -1,15 +1,17 @@
-import numpy as np
-from PIL import Image
-import svgwrite
 import math
-import matplotlib.pyplot as plt
-import random
-from shapely.geometry import Polygon, Point, polygon
-from scipy.spatial import Delaunay
-from shapely.ops import nearest_points
-import cv2
 import os
+import random
 import re
+
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+import svgwrite
+from PIL import Image
+from scipy.spatial import Delaunay
+from shapely.geometry import Polygon, Point
+from shapely.ops import nearest_points
+
 
 def plot_point_list(point_list, lines=True):
     x_coords, y_coords = zip(*point_list)
@@ -423,9 +425,8 @@ def separate_shapes(quads, triangles, spacing):
         return p1[0] == p2[0] and p1[1] == p2[1]
     def move_edge_inward_quad(quad_points, edge_indices, x):
         edges = get_edges(quad_points)
-        # Extract the quadrilateral vertices
-        P1 = np.array(quad_points[edge_indices[0]])  # One point of the edge
-        P2 = np.array(quad_points[edge_indices[1]])  # Other point of the edge
+        P1 = np.array(quad_points[edge_indices[0]])
+        P2 = np.array(quad_points[edge_indices[1]])
         fixed_vertices = []
         first_fixed_point = []
         second_fixed_point = []
@@ -442,31 +443,24 @@ def separate_shapes(quads, triangles, spacing):
                     second_fixed_point = edge[0]
         fixed_vertices = [first_fixed_point, second_fixed_point]
 
-        # Compute the inward direction (unit vector perpendicular to the edge)
         edge_vector = P2 - P1
         edge_length = np.linalg.norm(edge_vector)
         unit_edge_vector = edge_vector / edge_length
         perp_vector = np.array([-unit_edge_vector[1], unit_edge_vector[0]])
 
-        # Move the edge inward by distance x along the perpendicular direction
         P1_new = P1 + x * perp_vector
         P2_new = P2 + x * perp_vector
 
-        # Get the intersection points of the inwardly moved edge with lines through the fixed points
         i_P1 = get_line_intersection(fixed_vertices[0], P1, P1_new, P2_new)
         i_P2 = get_line_intersection(fixed_vertices[1], P2, P1_new, P2_new)
 
-        # Rebuild the quadrilateral based on the edge_indices
-        # We will use fixed vertices as anchors, and make sure the new points are inserted in the correct places.
-
-        # To handle any order of the edge, we'll check how the fixed vertices map to the input quad
         if edge_indices == [0, 1]:
             new_quad = [i_P1, i_P2, fixed_vertices[1], fixed_vertices[0]]
         elif edge_indices == [1, 2]:
             new_quad = [fixed_vertices[0], i_P1, i_P2, fixed_vertices[1]]
         elif edge_indices == [2, 3]:
             new_quad = [fixed_vertices[1], fixed_vertices[0], i_P1, i_P2]
-        elif edge_indices == [3,0]:
+        else:
             new_quad = [i_P1, fixed_vertices[0], fixed_vertices[1], i_P2]
         return new_quad
 

@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QPoint
-from PyQt5.QtWidgets import QInputDialog, QDialog, QHBoxLayout, QPushButton
+from PyQt6.QtCore import QPoint
+from PyQt6.QtWidgets import QInputDialog, QDialog, QHBoxLayout, QPushButton
 
 from game_objects import LineGameObject
 

@@ -1,7 +1,7 @@
 from components import Components
 from decorations.decorations import TallGrass
-from PyQt5.QtGui import QPen, QColor
-from PyQt5.QtCore import Qt
+from PyQt6.QtGui import QPen, QColor
+from PyQt6.QtCore import Qt
 
 class DecorManager:
     def __init__(self):
@@ -31,7 +31,7 @@ class DecorManager:
 
         for obj_type, entry in self.decors.items():
             color, width = self.colors[obj_type]
-            painter.setPen(QPen(QColor(color), width, Qt.SolidLine))
+            painter.setPen(QPen(QColor(color), width, Qt.PenStyle.SolidLine))
             for obj in entry["list"]:
                 obj.draw(painter, scale_x, scale_y)
 
@@ -45,14 +45,14 @@ class DecorManager:
     def save_decor_to_file(self, filename):
         with open(filename, "a") as f:
             for obj_type, entry in self.decors.items():
-                if (len(entry["list"]) != 0):
+                if len(entry["list"]) != 0:
                     f.write(f"{obj_type[0].upper() + obj_type[1:]}Count: {len(entry["list"])}" + "\n")
                     entry["class"].class_specific_stuff(f)
-                i = 0
-                for obj in entry["list"]:
-                    f.write(f"{obj_type[0].upper() + obj_type[1:]}: {i}" + "\n")
-                    obj.save_to_file(f, Components.map_size[1])
-                    i += 1
+                    i = 0
+                    for obj in entry["list"]:
+                        f.write(f"{obj_type[0].upper() + obj_type[1:]}: {i}" + "\n")
+                        obj.save_to_file(f, Components.map_size[1])
+                        i += 1
 
 
 decor_manager = DecorManager()

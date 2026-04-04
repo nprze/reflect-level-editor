@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QVBoxLayout, QPushButton, QComboBox, QFrame
+from PyQt6.QtWidgets import QVBoxLayout, QPushButton, QComboBox, QFrame
 from components import Components
 from objects_menu.object_manager import obj_manager
 
@@ -21,8 +21,8 @@ class ObjectMenu(QVBoxLayout):
         self.addWidget(self.clear_objs_bttn)
 
         self.sep_line = QFrame()
-        self.sep_line.setFrameShape(QFrame.HLine)
-        self.sep_line.setFrameShadow(QFrame.Plain)
+        self.sep_line.setFrameShape(QFrame.Shape.HLine)   # ✅ updated
+        self.sep_line.setFrameShadow(QFrame.Shadow.Plain) # ✅ updated
         self.addWidget(self.sep_line)
 
         self.clear_buttons = []
@@ -40,7 +40,7 @@ class ObjectMenu(QVBoxLayout):
         self.combo.show()
 
     def end_setting_objects(self):
-        if (not self.initialized):
+        if not self.initialized:
             return
         self.hide_all_clear_bttns()
         self.combo.hide()
@@ -50,18 +50,22 @@ class ObjectMenu(QVBoxLayout):
         Components.object_canvas.clear()
 
     def clear_object_type(self):
-        obj_manager.clear_object_type(self.sender().text()[6:])
-        Components.object_canvas.update()
+        sender = self.sender()
+        if sender:
+            obj_name = sender.text().replace("clear ", "")
+            obj_manager.clear_object_type(obj_name)
+            Components.object_canvas.update()
 
     def set_obj(self, index):
-        objects = self.combo.itemText(index)
-        Components.object_canvas.change_object_type(objects)
+        obj = self.combo.itemText(index)
+        Components.object_canvas.change_object_type(obj)
 
     def hide_all_clear_bttns(self):
         self.clear_objs_bttn.hide()
         self.sep_line.hide()
         for button in self.clear_buttons:
             button.hide()
+
     def show_all_clear_bttns(self):
         self.clear_objs_bttn.show()
         self.sep_line.show()

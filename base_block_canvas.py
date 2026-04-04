@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QPainter, QPen, QColor
-from PyQt5.QtCore import Qt, QPoint, QPointF
-from PyQt5.QtWidgets import QWidget
+from PyQt6.QtGui import QPainter, QPen, QColor
+from PyQt6.QtCore import Qt, QPoint, QPointF
+from PyQt6.QtWidgets import QWidget
 
 from components import Components
 
@@ -57,7 +57,7 @@ class BaseBlockCanvas(QWidget):
         self.update()
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.drawing = True
             current_point = QPoint()
             current_point.setX(int(event.pos().x()/ self.scale_x))
@@ -65,7 +65,7 @@ class BaseBlockCanvas(QWidget):
             self.last_point = current_point
 
     def mouseMoveEvent(self, event):
-        if (event.buttons() & Qt.LeftButton) and self.drawing:
+        if (event.buttons() & Qt.MouseButton.LeftButton) and self.drawing:
             current_point = QPoint()
             current_point.setX(int(event.pos().x() / self.scale_x))
             current_point.setY(int(event.pos().y() / self.scale_y))
@@ -77,7 +77,7 @@ class BaseBlockCanvas(QWidget):
                 self.update()
 
     def mouseReleaseEvent(self, event):
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.drawing = False
             current_point = QPoint()
             current_point.setX(int(event.pos().x() / self.scale_x))
@@ -91,7 +91,7 @@ class BaseBlockCanvas(QWidget):
         painter = QPainter(self)
         painter.fillRect(self.rect(), QColor("#000000"))
 
-        pen = QPen(QColor("#0F0F0F"), 1, Qt.SolidLine)
+        pen = QPen(QColor("#0F0F0F"), 1, Qt.PenStyle.SolidLine)
         painter.setPen(pen)
         for i in range(self.logical_extent[0]-1):
             painter.drawLine(QPoint(int((i+1) * self.scale_x), 0), QPoint(int((i+1) * self.scale_x), Components.editor_map_size[1]))
@@ -101,13 +101,13 @@ class BaseBlockCanvas(QWidget):
         painter.scale(self.scale_x, self.scale_y)
         pen.setCosmetic(True)
         for line in self.lines:
-            pen = QPen(line[0], 1, Qt.SolidLine)
+            pen = QPen(line[0], 1, Qt.PenStyle.SolidLine)
             painter.setPen(pen)
             adjusted_p1 = QPointF(line[1].x() + 0.5, line[1].y() + 0.5)
             adjusted_p2 = QPointF(line[2].x() + 0.5, line[2].y() + 0.5)
             painter.drawLine(adjusted_p1, adjusted_p2)
         for point in self.points:
-            pen = QPen(point[0], 1, Qt.SolidLine)
+            pen = QPen(point[0], 1, Qt.PenStyle.SolidLine)
             painter.setPen(pen)
             adjusted_point = QPointF(point[1].x() + 0.5, point[1].y() + 0.5)
             painter.drawPoint(adjusted_point)

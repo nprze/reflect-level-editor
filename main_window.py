@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QHBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QFileDialog, QHBoxLayout
 from base_block_canvas import BaseBlockCanvas
 from components import Components
 from decorations.decor_canvas import DecorCanvas
@@ -25,7 +25,6 @@ class LevelEditor(QMainWindow):
         if not proposed_height<= win_extent[1]:
             proposed_height = win_extent[1]
             proposed_width = int(proposed_height * aspect_ratio)
-
 
 
         self.resize(self.win_width, self.win_height)
@@ -63,7 +62,6 @@ class LevelEditor(QMainWindow):
         container.setLayout(main_layout)
 
 
-
         # Components singleton setup
         Components.set_window(self)
         Components.set_menu(self.menu)
@@ -94,4 +92,4 @@ if __name__ == "__main__":
         print(f"creating window: {lvl_width}x{lvl_height}")
         window = LevelEditor([lvl_width, lvl_height])
         window.show()
-        sys.exit(app.exec_())
+        sys.exit(app.exec())

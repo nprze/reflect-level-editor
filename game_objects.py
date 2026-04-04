@@ -1,10 +1,9 @@
-from PyQt5.QtCore import QPoint
-from PyQt5.QtWidgets import QInputDialog
+from PyQt6.QtCore import QPoint
 
 
 class LineGameObject:
     def __init__(self, start, end):
-        if (start[0]>end[0] and start[1]>end[1]):
+        if start[0]>end[0] and start[1]>end[1]:
             self.start = end
             self.end = start
         else:
