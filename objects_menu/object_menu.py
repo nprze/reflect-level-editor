@@ -21,8 +21,8 @@ class ObjectMenu(QVBoxLayout):
         self.addWidget(self.clear_objs_bttn)
 
         self.sep_line = QFrame()
-        self.sep_line.setFrameShape(QFrame.Shape.HLine)   # ✅ updated
-        self.sep_line.setFrameShadow(QFrame.Shadow.Plain) # ✅ updated
+        self.sep_line.setFrameShape(QFrame.Shape.HLine)
+        self.sep_line.setFrameShadow(QFrame.Shadow.Plain)
         self.addWidget(self.sep_line)
 
         self.clear_buttons = []

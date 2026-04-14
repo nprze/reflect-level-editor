@@ -111,3 +111,20 @@ class BaseBlockCanvas(QWidget):
             painter.setPen(pen)
             adjusted_point = QPointF(point[1].x() + 0.5, point[1].y() + 0.5)
             painter.drawPoint(adjusted_point)
+
+    def add_rectangles(self, rectangles):
+        self.clear()
+        for rect in rectangles:
+            color = QColor(f"#{rect['color']}")
+            x, y = rect['min']
+            w, h = rect['extent']
+
+            for i in range(h):
+                start = QPoint(x, y + i)
+                end = QPoint(x + w, y + i)
+
+                segments = get_non_diagonal(start, end)
+                for seg in segments:
+                    self.lines.append((color, seg[0], seg[1]))
+
+        self.update()

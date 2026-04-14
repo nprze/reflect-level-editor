@@ -4,11 +4,12 @@ import threading
 
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QColorDialog, QComboBox, QInputDialog, QFileDialog
 
 from components import Components
 from decorations.decor_menu import DecorMenu
 from objects_menu.object_menu import ObjectMenu
+from level_loader import load_scene
 
 
 class MainMenu(QWidget):
@@ -19,6 +20,10 @@ class MainMenu(QWidget):
         save_bttn = QPushButton("Save")
         save_bttn.clicked.connect(self.save)
         right_layout.addWidget(save_bttn)
+
+        load_bttn = QPushButton("load")
+        load_bttn.clicked.connect(self.load)
+        right_layout.addWidget(load_bttn)
 
         self.combo = QComboBox()
         self.combo.addItems(["blocks", "objects", "decorations"])
@@ -93,3 +98,10 @@ class MainMenu(QWidget):
         thread = threading.Thread(target=task, args=(value,))
         thread.daemon = True
         thread.start()
+    def load(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "select scene", "", "Text Files (*.txt)")
+        if file_path:
+            with open(file_path, "r") as file:
+                content = file.read()
+                rects = load_scene.extract_rectangles(content)
+                Components.blocks_canvas.add_rectangles(rects)
